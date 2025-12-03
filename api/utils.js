@@ -9,17 +9,16 @@ if (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
 }
 
 export async function recordHit(req, endpoint, body = null) {
-  const headers = {};
-  for (const [k, v] of req.headers.entries()) headers[k] = v;
+  const headers = req.headers || {};
 
   const hit = {
     endpoint,
     agent_id: (body && body.agent_id) || null,
-    ip: req.headers.get("x-forwarded-for") || null,
+    ip: req.headers["x-forwarded-for"] || req.headers["x-real-ip"] || null,
     user_agent: headers["user-agent"] || null,
     method: req.method,
-    path: new URL(req.url).pathname,
-    query_params: Object.fromEntries(new URL(req.url).searchParams),
+    path: req.url || endpoint,
+    query_params: {},
     body: body || null,
     headers
   };
