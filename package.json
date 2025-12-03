@@ -1,7 +1,8 @@
 {
   "name": "vercel-honeypot",
   "version": "1.0.0",
-  "engines": {
-    "node": "24.x"
+  "type": "module",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0"
   }
 }

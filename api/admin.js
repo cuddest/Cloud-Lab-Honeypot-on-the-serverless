@@ -1,4 +1,4 @@
-import { recordHit } from "./_utils";
+import { recordHit } from "./utils.js";
 
 export default async function handler(req) {
   await recordHit(req, "/api/admin", null);
