@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Honeypot Dashboard</title>
+  <style>
+    body{font-family:system-ui,Arial;padding:18px;background:#0f172a;color:#e6eef8}
+    .card{background:#081224;padding:10px;margin-bottom:10px;border-radius:6px}
+    .meta{color:#9fb0c8;font-size:13px}
+    pre{background:#021026;padding:8px;border-radius:4px;overflow:auto}
+    h1{margin-top:0}
+  </style>
+</head>
+<body>
+  <h1>Honeypot Dashboard</h1>
+  <p>Auto-updates every 2s. Live view of incoming hits.</p>
+  <div id="list"></div>
+<script>
+async function fetchLogs(){
+  try {
+    const res = await fetch('/api/logs?limit=30');
+    const json = await res.json();
+    const list = document.getElementById('list');
+    list.innerHTML = '';
+    (json.beacons || []).forEach(b => {
+      const el = document.createElement('div');
+      el.className = 'card';
+      el.innerHTML = `<div><strong>${b.endpoint}</strong> <span class="meta">${new Date(b.created_at).toLocaleString()}</span></div>
+        <div class="meta">ip: ${b.ip||'-'} | ua: ${b.user_agent||'-'}</div>
+        <pre>${JSON.stringify(b.body||{}, null, 2)}</pre>`;
+      list.appendChild(el);
+    });
+  } catch(e) { console.error(e); }
+}
+fetchLogs();
+setInterval(fetchLogs, 2000);
+</script>
+</body>
+</html>
